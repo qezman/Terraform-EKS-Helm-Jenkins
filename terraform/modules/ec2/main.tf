@@ -57,20 +57,30 @@ resource "aws_instance" "jenkins" {
   user_data = <<-EOF
     #!/bin/bash
     set -e
+    exec > /var/log/user-data.log 2>&1
 
-    # Update system packages
+    # Update system
     apt-get update -y
+    apt-get install -y ca-certificates curl gnupg unzip
 
-    # Install Java (Jenkins requires it)
-    apt-get install -y openjdk-17-jdk
+    # Install Java
+    apt-get install -y openjdk-21-jdk
 
-    # Add Jenkins repository and install Jenkins
-    curl -fsSL https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key | tee /usr/share/keyrings/jenkins-keyring.asc > /dev/null
-    echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian-stable binary/ | tee /etc/apt/sources.list.d/jenkins.list > /dev/null
+    # Add Jenkins repo with correct GPG method
+    curl -fsSL https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key | gpg --dearmor -o /usr/share/keyrings/jenkins-keyring.gpg
+    gpg --keyserver keyserver.ubuntu.com --recv-keys 7198F4B714ABFC68
+    gpg --export 7198F4B714ABFC68 | tee /usr/share/keyrings/jenkins-keyring.gpg > /dev/null
+    echo "deb [signed-by=/usr/share/keyrings/jenkins-keyring.gpg] https://pkg.jenkins.io/debian-stable binary/" | tee /etc/apt/sources.list.d/jenkins.list > /dev/null
     apt-get update -y
     apt-get install -y jenkins
 
-    # Start and enable Jenkins
+    # Create jenkins user properly
+    useradd -m -d /var/lib/jenkins -s /bin/bash -g jenkins jenkins || true
+    mkdir -p /var/lib/jenkins /var/cache/jenkins /var/log/jenkins
+    chown -R jenkins:jenkins /var/lib/jenkins /var/cache/jenkins /var/log/jenkins
+
+    # Start Jenkins
+    systemctl daemon-reload
     systemctl start jenkins
     systemctl enable jenkins
 
@@ -78,8 +88,6 @@ resource "aws_instance" "jenkins" {
     apt-get install -y docker.io
     systemctl start docker
     systemctl enable docker
-
-    # Add jenkins user to docker group so Jenkins can run docker commands
     usermod -aG docker jenkins
 
     # Install kubectl
@@ -87,7 +95,6 @@ resource "aws_instance" "jenkins" {
     install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 
     # Install AWS CLI
-    apt-get install -y unzip
     curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
     unzip awscliv2.zip
     ./aws/install
