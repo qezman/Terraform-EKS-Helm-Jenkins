@@ -12,8 +12,8 @@ module "eks" {
   project_name       = var.project_name
   environment        = var.environment
   subnet_ids         = module.vpc.public_subnet_ids
-  kubernetes_version = "1.29"
-  node_instance_type = "t3.medium"
+  kubernetes_version = "1.31"
+  node_instance_type = "t3.small"
 }
 
 module "ecr" {
@@ -28,6 +28,5 @@ module "ec2" {
   environment     = var.environment
   vpc_id          = module.vpc.vpc_id
   subnet_id       = module.vpc.public_subnet_ids[0]
-  instance_type   = "t2.micro"
-  public_key_path = "~/.ssh/eks-project-key.pub"
+  instance_type   = "t3.small"
 }

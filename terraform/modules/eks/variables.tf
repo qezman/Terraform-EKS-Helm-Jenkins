@@ -16,11 +16,11 @@ variable "subnet_ids" {
 variable "kubernetes_version" {
   description = "Kubernetes version for the EKS cluster"
   type        = string
-  default     = "1.29"
+  default     = "1.31"
 }
 
 variable "node_instance_type" {
   description = "EC2 instance type for worker nodes"
   type        = string
-  default     = "t3.medium"
+  default     = "t3.small"
 }

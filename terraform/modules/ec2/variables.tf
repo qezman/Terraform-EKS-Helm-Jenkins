@@ -21,17 +21,11 @@ variable "subnet_id" {
 variable "instance_type" {
   description = "EC2 instance type for Jenkins"
   type        = string
-  default     = "t2.micro"
+  default     = "t3.micro"
 }
 
 variable "ami_id" {
   description = "AMI ID for the Jenkins EC2 instance"
   type        = string
   default     = "ami-05cf1e9f73fbad2e2"
-}
-
-variable "public_key_path" {
-  description = "Path to your local SSH public key"
-  type        = string
-  default     = "~/.ssh/id_rsa.pub"
 }

@@ -37,7 +37,7 @@ resource "aws_security_group" "jenkins" {
 
 resource "aws_key_pair" "jenkins" {
   key_name   = "${var.project_name}-jenkins-key"
-  public_key = file(var.public_key_path)
+  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDMiOrQRwePN6lDaPe3Q4qXEkBfCJCGl5/vi0RVmEVyyufjf/8AsgdhRPj8cevmj41Y5OMx/8JjVPz0uZ/3D/wm9vWdMa48MkvSGbhY4xp+ub/E6Q6aSawQQZol9tnA22NLGxt8Q02uELJ/DEzezLsPjy7jaZS4Y81vQg+ZCtAua2wmUR+XRvy4kJjK7m/9aBgBvKCEBK4jycchPC59wIizdB2ZK+Ex1uVthcFKQYNrqKc4Ro31zkyfgSWImkD2PPfTPOu424d42Fr6R8g9su6XgB0D9JvvXauEPqF4xJJw+4CyGHlJ94AhGmS1K8qTtEkyU6LMau970/Z3N+5WgmTZmYyX0p5XUf/kPxhmRXWIlPiG6NQmNjBNmW+ucBjpLfcFr727VLiWRo7YeY0dyqhkPifSNSqf1vWv4CCqSdQMmgsxh6WlLliSiSf+fe1zRzw3eLuR7VTybbtyMTwgvHMigpRs7so+zGvZlDCV8umlBTnTc35X9NchLAjS0c+Ww7dNmOqd8YniG1CMGSZrUzXd2qT8hARe+DKE3n/ptC56GiGkBbC3DPUkADuQpR3vQX7RNjfhUxqoM4r7EiC4JMIlzMOPoYbj+5m2PmAC7OMvFkj290VZ5T+Axk38jfHukheT84FOuUQbCH2XWlmxgcyvOktHvUn8rYEgZdbofYKE/Q== qossim_05@Qezman"
 
   tags = {
     Name        = "${var.project_name}-jenkins-key"
