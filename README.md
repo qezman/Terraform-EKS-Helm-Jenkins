@@ -18,21 +18,6 @@ This is the **infrastructure repository**. Application code lives in separate re
 - **Frontend**: https://github.com/qezman/olfactory-fragrance
 - **Backend**: https://github.com/qezman/olfactory-fragrance-backend
 
-eks-project/
-├── terraform/
-│   ├── main.tf                  # Root module - wires all modules together
-│   ├── variables.tf             # Global variables
-│   ├── outputs.tf               # Exposed outputs (IPs, URLs, cluster name)
-│   ├── provider.tf              # AWS provider configuration
-│   └── modules/
-│       ├── vpc/                 # VPC, subnets, internet gateway, route tables
-│       ├── eks/                 # EKS cluster, node group, IAM roles
-│       ├── ec2/                 # Jenkins server with automated setup
-│       └── ecr/                 # ECR repositories for frontend and backend
-├── app/                         # See README inside
-├── k8s/                         # See README inside
-└── jenkins/                     # See README inside
-
 ## Infrastructure Stack
 
 | Component | Technology |
@@ -81,20 +66,10 @@ aws eks update-kubeconfig --region us-east-1 --name eks-project-eks
 kubectl get nodes
 ```
 
-### Post-Provisioning Steps
-After EC2 Jenkins is up:
-1. Attach `eks-project-jenkins-role` IAM role to Jenkins EC2
-2. Update EKS auth mode: `aws eks update-cluster-config --name eks-project-eks --access-config authenticationMode=API_AND_CONFIG_MAP`
-3. Grant Jenkins role cluster access via `aws eks create-access-entry` and `aws eks associate-access-policy`
-4. Install nginx-ingress: `helm upgrade --install ingress-nginx ingress-nginx/ingress-nginx --namespace ingress-nginx --create-namespace`
-5. Install cert-manager: `helm upgrade --install cert-manager jetstack/cert-manager --namespace cert-manager --create-namespace --set crds.enabled=true`
-6. Configure Jenkins pipelines for frontend and backend repos
-
 ### Destroy Infrastructure
 ```bash
 terraform destroy -auto-approve
 ```
-> Note: Supabase database is external and unaffected by destroy.
 
 ## CI/CD Pipeline Flow
 
