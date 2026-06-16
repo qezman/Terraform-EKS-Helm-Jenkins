@@ -8,8 +8,13 @@ variable "environment" {
   type        = string
 }
 
-variable "subnet_ids" {
-  description = "Subnet IDs for the EKS cluster and node group"
+variable "cluster_subnet_ids" {
+  description = "Subnet IDs for the EKS cluster control plane (public + private)"
+  type        = list(string)
+}
+
+variable "node_subnet_ids" {
+  description = "Subnet IDs for the EKS node group (private only)"
   type        = list(string)
 }
 
