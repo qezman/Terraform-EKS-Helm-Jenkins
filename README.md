@@ -8,8 +8,8 @@ A fully automated, production-grade cloud infrastructure project deploying a 3-t
 - **Backend**: Node.js + Express REST API
 - **Database**: Supabase PostgreSQL (managed cloud)
 
-## Architecture Overview
-![Architecture Diagram](./architecture.gif)
+<!-- ## Architecture Overview
+![Architecture Diagram](./architecture.gif) -->
 
 ## Repository Structure
 
