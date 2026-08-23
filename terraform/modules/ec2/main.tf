@@ -9,7 +9,7 @@ resource "aws_security_group" "jenkins" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"] # this would be restricted to my IP in production
+    cidr_blocks = ["102.93.10.97/32"] // scoped to admin's ip
   }
 
   # Allow access to Jenkins web UI on port 8080
@@ -18,7 +18,7 @@ resource "aws_security_group" "jenkins" {
     from_port   = 8080
     to_port     = 8080
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = ["102.93.10.97/32"] // scoped to admin's ip
   }
 
   # Allow all outbound traffic
@@ -52,6 +52,7 @@ resource "aws_instance" "jenkins" {
   subnet_id              = var.subnet_id
   vpc_security_group_ids = [aws_security_group.jenkins.id]
   key_name               = aws_key_pair.jenkins.key_name
+  iam_instance_profile   = aws_iam_instance_profile.jenkins.name
 
   # installs Jenkins, Java, Docker, and kubectl
   user_data = <<-EOF
@@ -116,4 +117,51 @@ resource "aws_instance" "jenkins" {
     Name        = "${var.project_name}-jenkins"
     Environment = var.environment
   }
+}
+
+resource "aws_iam_role" "jenkins" {
+  name = "${var.project_name}-jenkins-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action    = "sts:AssumeRole"
+        Effect    = "Allow"
+        Principal = { Service = "ec2.amazonaws.com" }
+      }
+    ]
+  })
+
+  tags = {
+    "Name"      = "${var.project_name}-jenkins-role"
+    Environment = var.environment
+  }
+}
+
+# push/pull to ecr
+resource "aws_iam_role_policy_attachment" "jenkins_ecr" {
+  role       = aws_iam_role.jenkins.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryPowerUser"
+}
+
+resource "aws_iam_role_policy" "jenkins_eks_describe" {
+  name = "${var.project_name}-jenkins-eks-describe"
+  role = aws_iam_role.jenkins.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect   = "Allow"
+        Action   = ["eks:DescribeCluster", "eks:ListClusters"]
+        Resource = "*"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_instance_profile" "jenkins" {
+  name = "${var.project_name}-jenkins-profile"
+  role = aws_iam_role.jenkins.name
 }
