@@ -85,10 +85,10 @@ resource "aws_iam_role_policy_attachment" "eks_ecr_read_only" {
 }
 
 resource "aws_eks_node_group" "main" {
-  cluster_name           = aws_eks_cluster.main.name
-  node_group_name        = "${var.project_name}-node-group"
-  node_role_arn          = aws_iam_role.eks_nodes.arn
-  subnet_ids             = var.node_subnet_ids
+  cluster_name    = aws_eks_cluster.main.name
+  node_group_name = "${var.project_name}-node-group"
+  node_role_arn   = aws_iam_role.eks_nodes.arn
+  subnet_ids      = var.node_subnet_ids
 
   instance_types = [var.node_instance_type]
 
@@ -106,6 +106,21 @@ resource "aws_eks_node_group" "main" {
 
   tags = {
     Name        = "${var.project_name}-node-group"
+    Environment = var.environment
+  }
+}
+
+data "tls_certificate" "eks_oidc" {
+  url = aws_eks_cluster.main.identity[0].oidc[0].issuer
+}
+
+resource "aws_iam_openid_connect_provider" "eks" {
+  url             = aws_eks_cluster.main.identity[0].oidc[0].issuer
+  client_id_list  = ["sts.amazonaws.com"]
+  thumbprint_list = [data.tls_certificate.eks_oidc.certificates[0].sha1_fingerprint]
+
+  tags = {
+    Name        = "${var.project_name}-eks-oidc"
     Environment = var.environment
   }
 }
