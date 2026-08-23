@@ -15,3 +15,8 @@ variable "environment" {
   type        = string
   default     = "dev"
 }
+
+variable "jenkins_ssh_public_key" {
+  description = "SSH public key for Jenkins EC2 access"
+  type = string
+}

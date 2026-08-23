@@ -8,13 +8,13 @@ module "vpc" {
 }
 
 module "eks" {
-  source = "./modules/eks"
-  project_name        = var.project_name
-  environment         = var.environment
-  cluster_subnet_ids  = concat(module.vpc.public_subnet_ids, module.vpc.private_subnet_ids)
-  node_subnet_ids     = module.vpc.private_subnet_ids
-  kubernetes_version  = "1.31"
-  node_instance_type  = "t3.small"
+  source             = "./modules/eks"
+  project_name       = var.project_name
+  environment        = var.environment
+  cluster_subnet_ids = concat(module.vpc.public_subnet_ids, module.vpc.private_subnet_ids)
+  node_subnet_ids    = module.vpc.private_subnet_ids
+  kubernetes_version = "1.31"
+  node_instance_type = "t3.small"
 }
 
 module "ecr" {
@@ -24,10 +24,11 @@ module "ecr" {
 }
 
 module "ec2" {
-  source        = "./modules/ec2"
-  project_name  = var.project_name
-  environment   = var.environment
-  vpc_id        = module.vpc.vpc_id
-  subnet_id     = module.vpc.public_subnet_ids[0]
-  instance_type = "t3.small"
+  source                 = "./modules/ec2"
+  project_name           = var.project_name
+  environment            = var.environment
+  vpc_id                 = module.vpc.vpc_id
+  subnet_id              = module.vpc.public_subnet_ids[0]
+  instance_type          = "t3.small"
+  jenkins_ssh_public_key = var.jenkins_ssh_public_key
 }
