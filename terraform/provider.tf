@@ -12,11 +12,13 @@ terraform {
     bucket       = "eks-project-tfstate-203637463799"
     key          = "terraform.tfstate"
     region       = "us-east-1"
+    profile      = "eks-project"
     use_lockfile = true
     encrypt      = true
   }
 }
 
 provider "aws" {
-  region = var.aws_region
+  region  = var.aws_region
+  profile = "eks-project"
 }
