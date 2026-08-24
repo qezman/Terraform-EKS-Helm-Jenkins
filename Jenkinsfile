@@ -48,24 +48,24 @@ pipeline {
     }
 
     stage('Deploy') {
-        steps {
-            sh '''
-            aws eks update-kubeconfig --name eks-project-eks --region $AWS_REGION
+    steps {
+        sh '''
+        aws eks update-kubeconfig --name eks-project-eks --region $AWS_REGION
 
-            sed -e "s|{{ ECR_REGISTRY }}|203637463799.dkr.ecr.us-east-1.amazonaws.com|g" \
-                -e "s|{{ IMAGE_TAG }}|$IMAGE_TAG|g" \
-                frontend/k8s/deployment.yaml | kubectl apply -f -
-            kubectl apply -f frontend/k8s/configmap.yaml -f frontend/k8s/service.yaml -f frontend/k8s/ingress.yaml
+        sed -e "s|{{ ECR_REGISTRY }}|203637463799.dkr.ecr.us-east-1.amazonaws.com|g" \
+            -e "s|{{ IMAGE_TAG }}|$IMAGE_TAG|g" \
+            frontend/k8s/deployment.yaml | kubectl apply -n olfactory -f -
+        kubectl apply -n olfactory -f frontend/k8s/configmap.yaml -f frontend/k8s/service.yaml -f frontend/k8s/ingress.yaml
 
-            sed -e "s|{{ ECR_REGISTRY }}|203637463799.dkr.ecr.us-east-1.amazonaws.com|g" \
-                -e "s|{{ IMAGE_TAG }}|$IMAGE_TAG|g" \
-                backend/k8s/deployment.yaml | kubectl apply -f -
-            kubectl apply -f backend/k8s/configmap.yaml -f backend/k8s/service.yaml
+        sed -e "s|{{ ECR_REGISTRY }}|203637463799.dkr.ecr.us-east-1.amazonaws.com|g" \
+            -e "s|{{ IMAGE_TAG }}|$IMAGE_TAG|g" \
+            backend/k8s/deployment.yaml | kubectl apply -n olfactory -f -
+        kubectl apply -n olfactory -f backend/k8s/configmap.yaml -f backend/k8s/service.yaml
 
-            kubectl rollout status deployment/olfactory-frontend
-            kubectl rollout status deployment/olfactory-fragrance-backend
-            '''
-        }
-}
+        kubectl rollout status deployment/olfactory-frontend -n olfactory
+        kubectl rollout status deployment/olfactory-fragrance-backend -n olfactory
+        '''
+    }
+    }
   }
 }
