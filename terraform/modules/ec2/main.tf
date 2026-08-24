@@ -9,7 +9,7 @@ resource "aws_security_group" "jenkins" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["102.93.10.97/32"] // scoped to admin's ip
+    cidr_blocks = ["102.88.108.128/32"] // scoped to admin's ip
   }
 
   # Allow access to Jenkins web UI on port 8080
@@ -18,7 +18,7 @@ resource "aws_security_group" "jenkins" {
     from_port   = 8080
     to_port     = 8080
     protocol    = "tcp"
-    cidr_blocks = ["102.93.10.97/32"] // scoped to admin's ip
+    cidr_blocks = ["102.88.108.128/32"] // scoped to admin's ip
   }
 
   # Allow all outbound traffic
