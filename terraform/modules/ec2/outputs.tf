@@ -7,3 +7,7 @@ output "jenkins_public_dns" {
   description = "Public DNS of the Jenkins EC2 instance"
   value       = aws_instance.jenkins.public_dns
 }
+
+output "jenkins_role_arn" {
+  value = aws_iam_role.jenkins.arn
+}

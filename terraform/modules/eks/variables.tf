@@ -29,3 +29,8 @@ variable "node_instance_type" {
   type        = string
   default     = "t3.small"
 }
+
+variable "jenkins_role_arn" {
+  type        = string
+  description = "ARN of the Jenkins IAM role, for EKS access entry"
+}

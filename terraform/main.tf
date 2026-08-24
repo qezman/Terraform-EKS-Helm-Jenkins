@@ -15,6 +15,7 @@ module "eks" {
   node_subnet_ids    = module.vpc.private_subnet_ids
   kubernetes_version = "1.31"
   node_instance_type = "t3.small"
+  jenkins_role_arn   = module.ec2.jenkins_role_arn
 }
 
 module "ecr" {
