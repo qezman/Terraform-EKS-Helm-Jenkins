@@ -34,3 +34,8 @@ variable "jenkins_role_arn" {
   type        = string
   description = "ARN of the Jenkins IAM role, for EKS access entry"
 }
+
+variable "admin_cidr" {
+  type        = string
+  description = "Admin's IP for restricted access to the EKS API endpoint"
+}

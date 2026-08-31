@@ -24,13 +24,12 @@ variable "instance_type" {
   default     = "t3.micro"
 }
 
-variable "ami_id" {
-  description = "AMI ID for the Jenkins EC2 instance"
-  type        = string
-  default     = "ami-05cf1e9f73fbad2e2"
-}
-
 variable "jenkins_ssh_public_key" {
   description = "SSH public key for Jenkins EC2 access"
-  type = string
+  type        = string
+}
+
+variable "admin_cidr" {
+  type        = string
+  description = "Admin's IP for restricted access (SSH, Jenkins UI, EKS API)"
 }

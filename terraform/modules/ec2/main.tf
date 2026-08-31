@@ -9,7 +9,7 @@ resource "aws_security_group" "jenkins" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["102.88.108.128/32"] // scoped to admin's ip
+    cidr_blocks = [var.admin_cidr] // scoped to admin's ip
   }
 
   # Allow access to Jenkins web UI on port 8080
@@ -18,7 +18,7 @@ resource "aws_security_group" "jenkins" {
     from_port   = 8080
     to_port     = 8080
     protocol    = "tcp"
-    cidr_blocks = ["102.88.108.128/32"] // scoped to admin's ip
+    cidr_blocks = [var.admin_cidr] // scoped to admin's ip
   }
 
   # Allow all outbound traffic
@@ -47,7 +47,7 @@ resource "aws_key_pair" "jenkins" {
 
 # Jenkins EC2 instance
 resource "aws_instance" "jenkins" {
-  ami                    = var.ami_id
+  ami                    = data.aws_ami.ubuntu.id
   instance_type          = var.instance_type
   subnet_id              = var.subnet_id
   vpc_security_group_ids = [aws_security_group.jenkins.id]

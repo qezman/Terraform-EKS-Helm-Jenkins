@@ -18,5 +18,10 @@ variable "environment" {
 
 variable "jenkins_ssh_public_key" {
   description = "SSH public key for Jenkins EC2 access"
-  type = string
+  type        = string
+}
+
+variable "admin_cidr" {
+  type        = string
+  description = "Admin's IP for restricted access to Jenkins SSH/UI and the EKS API endpoint"
 }

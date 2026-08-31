@@ -16,6 +16,8 @@ module "eks" {
   kubernetes_version = "1.31"
   node_instance_type = "t3.small"
   jenkins_role_arn   = module.ec2.jenkins_role_arn
+  admin_cidr         = var.admin_cidr
+
 }
 
 module "ecr" {
@@ -32,4 +34,5 @@ module "ec2" {
   subnet_id              = module.vpc.public_subnet_ids[0]
   instance_type          = "t3.small"
   jenkins_ssh_public_key = var.jenkins_ssh_public_key
+  admin_cidr             = var.admin_cidr
 }
